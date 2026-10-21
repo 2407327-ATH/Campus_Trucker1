@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CampusTrack</string>
+    <string name="tagline">Student Attendance &amp; Academic Tracker</string>
+    <string name="demo_accounts">Demo accounts\nStudent: student@nu.ac.zm / Student@123\nStudent 2: student2@nu.ac.zm / Student@123\nLecturer: lecturer@nu.ac.zm / Lecturer@123\nAdmin: admin@nu.ac.zm / Admin@123</string>
+</resources>

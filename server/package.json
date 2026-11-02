@@ -2,9 +2,6 @@
   "name": "campustrack-server",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": "20.x"
-  },
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -18,7 +15,6 @@
     "express-rate-limit": "^7.4.1",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.11.5",
-    "pg": "^8.23.1"
+    "mysql2": "^3.11.5"
   }
 }

@@ -174,13 +174,19 @@ async function initPostgres() {
   const client = new Pool({
     connectionString,
     ssl: postgresSsl(connectionString),
-    connectionTimeoutMillis: 15000,
+    connectionTimeoutMillis: 60000,
   });
   pool = wrapPg(client);
-  const statements = PG_SCHEMA.split(";").map((statement) => statement.trim()).filter(Boolean);
-  for (const statement of statements) await pool.query(statement);
-  await seed();
-  return pool;
+  try {
+    const statements = PG_SCHEMA.split(";").map((statement) => statement.trim()).filter(Boolean);
+    for (const statement of statements) await pool.query(statement);
+    await seed();
+    return pool;
+  } catch (error) {
+    pool = null;
+    await client.end().catch(() => {});
+    throw error;
+  }
 }
 
 async function init() {

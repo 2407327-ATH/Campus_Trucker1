@@ -14,7 +14,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class ApiClient {
-    public static final String BASE_URL = "https://campustrack-api.onrender.com/api/";
+    public static final String BASE_URL = "https://campustrack-api-ojhf.onrender.com/api/";
 
     private ApiClient() {
     }

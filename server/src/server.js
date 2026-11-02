@@ -204,6 +204,7 @@ async function snapshotFor(user) {
 async function main() {
   await db.init();
   const app = express();
+  app.set("trust proxy", 1);
   app.use(helmet());
   app.use(cors());
   app.use(express.json({ limit: "256kb" }));
@@ -550,8 +551,8 @@ async function main() {
     res.status(500).json({ error: "The server could not complete that request." });
   });
 
-  app.listen(PORT, () => {
-    console.log(`CampusTrack API listening on http://localhost:${PORT}`);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`CampusTrack API listening on port ${PORT}`);
   });
 }
 

@@ -201,58 +201,15 @@ async function snapshotFor(user) {
   };
 }
 
-let databaseReady = false;
-let databaseError = null;
-
-function waitForDatabase() {
-  return new Promise((resolve) => {
-    const started = Date.now();
-    const timer = setInterval(() => {
-      if (databaseReady || databaseError || Date.now() - started > 70000) {
-        clearInterval(timer);
-        resolve();
-      }
-    }, 300);
-  });
-}
-
-async function connectDatabase() {
-  while (!databaseReady) {
-    try {
-      databaseError = null;
-      await db.init();
-      databaseReady = true;
-      console.log("Database ready.");
-    } catch (error) {
-      databaseError = error.message;
-      console.error("Could not connect to the database. Retrying in 5 seconds.");
-      console.error(error.message);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-    }
-  }
-}
-
 async function main() {
+  await db.init();
   const app = express();
-  app.set("trust proxy", 1);
   app.use(helmet());
   app.use(cors());
   app.use(express.json({ limit: "256kb" }));
   const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30, standardHeaders: true, legacyHeaders: false });
 
-  app.get("/api/health", async (req, res) => {
-    await waitForDatabase();
-    if (!databaseReady) return res.status(503).json({ ok: false });
-    res.json({ ok: true });
-  });
-
-  app.use(async (req, res, next) => {
-    await waitForDatabase();
-    if (!databaseReady) {
-      return res.status(503).json({ error: databaseError || "CampusTrack is still connecting to the database. Try again in a moment." });
-    }
-    next();
-  });
+  app.get("/api/health", (req, res) => res.json({ ok: true }));
 
   app.post("/api/auth/register", authLimiter, async (req, res) => {
     const name = clean(req.body.name);
@@ -593,10 +550,9 @@ async function main() {
     res.status(500).json({ error: "The server could not complete that request." });
   });
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`CampusTrack API listening on port ${PORT}`);
+  app.listen(PORT, () => {
+    console.log(`CampusTrack API listening on http://localhost:${PORT}`);
   });
-  connectDatabase();
 }
 
 main().catch((error) => {
